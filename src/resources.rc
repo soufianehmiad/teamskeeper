@@ -1,10 +1,6 @@
 #include "resource.h"
 #include <windows.h>
 
-// Application icon (will be created as simple embedded icons)
-IDI_ICON_ACTIVE ICON "icons/active.ico"
-IDI_ICON_INACTIVE ICON "icons/inactive.ico"
-
 // Version information
 VS_VERSION_INFO VERSIONINFO
 FILEVERSION 1,0,0,0
