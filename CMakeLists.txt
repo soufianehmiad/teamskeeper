@@ -42,8 +42,6 @@ if(WIN32)
         uuid
     )
     
-    # Add resource file
-    target_sources(${PROJECT_NAME} PRIVATE src/resources.rc)
     
     # Set subsystem to Windows (GUI app)
     set_target_properties(${PROJECT_NAME} PROPERTIES
