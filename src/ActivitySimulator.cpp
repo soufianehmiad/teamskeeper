@@ -52,14 +52,10 @@ void ActivitySimulator::SimulateMouseMove() {
 }
 
 void ActivitySimulator::SimulateKeyPress() {
-    // Simulate a very subtle key combination that shouldn't interfere with work
-    // F15 key is rarely used and won't affect most applications
-    BYTE VK_F15 = 0x7E;
-    
     // Simulate F15 key press and release
-    keybd_event(VK_F15, 0, 0, 0);               // Key down
+    keybd_event(0x7E, 0, 0, 0);               // F15 key down
     Sleep(10);
-    keybd_event(VK_F15, 0, KEYEVENTF_KEYUP, 0); // Key up
+    keybd_event(0x7E, 0, KEYEVENTF_KEYUP, 0); // F15 key up
 }
 
 void ActivitySimulator::ResetLastActivity() {
