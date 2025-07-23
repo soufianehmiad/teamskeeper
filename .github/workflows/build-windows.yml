@@ -1,0 +1,95 @@
+name: Build Windows Release
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    strategy:
+      matrix:
+        config: [Release]
+        arch: [x64]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+      
+    - name: Setup CMake
+      uses: cmake-tools/setup-cmake@v1
+      with:
+        cmake-version: '3.20'
+        
+    - name: Configure CMake
+      run: |
+        mkdir build
+        cd build
+        cmake .. -G "Visual Studio 17 2022" -A ${{ matrix.arch }}
+        
+    - name: Build
+      run: |
+        cd build
+        cmake --build . --config ${{ matrix.config }} --verbose
+        
+    - name: Verify build
+      run: |
+        if (Test-Path "build/${{ matrix.config }}/TeamsKeeper.exe") {
+          Write-Host "✅ Build successful - TeamsKeeper.exe created"
+          Get-Item "build/${{ matrix.config }}/TeamsKeeper.exe" | Select-Object Name, Length, LastWriteTime
+        } else {
+          Write-Host "❌ Build failed - TeamsKeeper.exe not found"
+          exit 1
+        }
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: TeamsKeeper-Windows-${{ matrix.arch }}-${{ matrix.config }}
+        path: build/${{ matrix.config }}/TeamsKeeper.exe
+        retention-days: 30
+        
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: build/${{ matrix.config }}/TeamsKeeper.exe
+        name: TeamsKeeper ${{ github.ref_name }}
+        body: |
+          ## TeamsKeeper ${{ github.ref_name }}
+          
+          🚀 **Windows 11 System Tray Application**
+          
+          ### Features
+          - ✅ Keep system awake (prevent sleep)
+          - ✅ Keep Microsoft Teams status green
+          - ✅ Clean system tray interface
+          - ✅ Toggle controls via right-click menu
+          
+          ### Download
+          - **TeamsKeeper.exe** - Ready to run on Windows 11/10
+          
+          ### Usage
+          1. Download `TeamsKeeper.exe`
+          2. Run the executable
+          3. Look for the green/gray icon in your system tray
+          4. Right-click to access settings
+          
+          ### System Requirements
+          - Windows 10/11 (x64)
+          - No additional dependencies required
+          
+          ---
+          Built with GitHub Actions 🤖
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

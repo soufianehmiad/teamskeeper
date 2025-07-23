@@ -1,0 +1,36 @@
+#include "resource.h"
+#include <windows.h>
+
+// Application icon (will be created as simple embedded icons)
+IDI_ICON_ACTIVE ICON "icons/active.ico"
+IDI_ICON_INACTIVE ICON "icons/inactive.ico"
+
+// Version information
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+FILEFLAGS 0x0L
+FILEOS VOS__WINDOWS32
+FILETYPE VFT_APP
+FILESUBTYPE VFT2_UNKNOWN
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904b0"
+        {
+            VALUE "CompanyName", "TeamsKeeper"
+            VALUE "FileDescription", "Keep system awake and Teams green"
+            VALUE "FileVersion", "1.0.0.0"
+            VALUE "InternalName", "TeamsKeeper"
+            VALUE "LegalCopyright", "Copyright (C) 2024"
+            VALUE "OriginalFilename", "TeamsKeeper.exe"
+            VALUE "ProductName", "TeamsKeeper"
+            VALUE "ProductVersion", "1.0.0.0"
+        }
+    }
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x409, 1200
+    }
+}
