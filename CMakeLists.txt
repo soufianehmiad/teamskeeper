@@ -24,7 +24,6 @@ set(HEADERS
     src/SystemTray.h
     src/ActivitySimulator.h
     src/PowerManager.h
-    src/resource.h
 )
 
 # Create executable
