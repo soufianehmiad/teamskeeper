@@ -20,6 +20,7 @@ public:
 
 private:
     void CreateContextMenu();
+    void CreateIcons();
 
 private:
     TeamsKeeper* keeper_;
