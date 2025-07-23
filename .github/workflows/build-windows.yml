@@ -21,9 +21,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v2
-      
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: ${{ matrix.arch }}
+        
     - name: Setup CMake
       uses: jwlawson/actions-setup-cmake@v2
       with:
@@ -33,20 +35,21 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -G "Visual Studio 16 2019" -A ${{ matrix.arch }}
+        cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
         
     - name: Build
       run: |
         cd build
-        cmake --build . --config ${{ matrix.config }} --verbose
+        nmake
         
     - name: Verify build
       run: |
-        if (Test-Path "build/${{ matrix.config }}/TeamsKeeper.exe") {
+        if (Test-Path "build/TeamsKeeper.exe") {
           Write-Host "✅ Build successful - TeamsKeeper.exe created"
-          Get-Item "build/${{ matrix.config }}/TeamsKeeper.exe" | Select-Object Name, Length, LastWriteTime
+          Get-Item "build/TeamsKeeper.exe" | Select-Object Name, Length, LastWriteTime
         } else {
           Write-Host "❌ Build failed - TeamsKeeper.exe not found"
+          Get-ChildItem build -Recurse
           exit 1
         }
         
@@ -54,14 +57,14 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: TeamsKeeper-Windows-${{ matrix.arch }}-${{ matrix.config }}
-        path: build/${{ matrix.config }}/TeamsKeeper.exe
+        path: build/TeamsKeeper.exe
         retention-days: 30
         
     - name: Create Release
       if: startsWith(github.ref, 'refs/tags/v')
       uses: softprops/action-gh-release@v1
       with:
-        files: build/${{ matrix.config }}/TeamsKeeper.exe
+        files: build/TeamsKeeper.exe
         name: TeamsKeeper ${{ github.ref_name }}
         body: |
           ## TeamsKeeper ${{ github.ref_name }}
