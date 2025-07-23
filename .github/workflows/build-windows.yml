@@ -25,7 +25,7 @@ jobs:
       uses: microsoft/setup-msbuild@v2
       
     - name: Setup CMake
-      uses: cmake-tools/setup-cmake@v1
+      uses: jwlawson/actions-setup-cmake@v2
       with:
         cmake-version: '3.20'
         
